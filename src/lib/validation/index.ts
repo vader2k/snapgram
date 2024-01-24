@@ -1,6 +1,5 @@
 import * as z from "zod"
 
-
 export const SignupValidation = z.object({
     name: z.string().min(2, {
         message: "name must be above 1 character"

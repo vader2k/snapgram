@@ -1,19 +1,22 @@
 
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button" //button from shadcn
 
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod" //zod resolver to handle the form
+import { useForm } from "react-hook-form" //form from c=shadcn
 
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
-import { SignupValidation } from "@/lib/validation"
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form" //form dependencies from shadcn
+import { Input } from "@/components/ui/input" //input from shadcn
+import { SignupValidation } from "@/lib/validation" // signup validation function to set the form values
 import { z } from "zod"
-import Loader from "@/components/ui/shared/Loader"
-import { Link } from "react-router-dom"
-import { createUserAccount } from "@/lib/appwrite/api"
+import Loader from "@/components/ui/shared/Loader" //loading svg component
+import { Link } from "react-router-dom" // react router dom link function
+import { createUserAccount } from "@/lib/appwrite/api" // function to create user account to save in auth and database
+
+import { useToast } from "@/components/ui/use-toast" // toast gotten from shadcn
 
 
 const SignupForm = () => {
+  const { toast } = useToast()
 
   const isLoading = false;
 
@@ -32,11 +35,11 @@ const SignupForm = () => {
   async function onSubmit(values: z.infer<typeof SignupValidation>) {
     // create user
     const newUser = await createUserAccount(values)
-    // handle creation error
+    // handle creation error and return a toast saying an error occured while creatring an account
     if (!newUser) {
-      return;
+      return toast({ title: "Sign up failed, please try again." })
     }
-    // add a toast to signify that the user has been created
+    //const session = await SignInAccount()
   }
 
   return (
