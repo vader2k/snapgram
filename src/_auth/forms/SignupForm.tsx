@@ -12,13 +12,14 @@ import Loader from "@/components/ui/shared/Loader" //loading svg component
 import { Link } from "react-router-dom" // react router dom link function
 
 import { useToast } from "@/components/ui/use-toast" // toast gotten from shadcn
-import { useCreateUserAccount } from "@/lib/react-query/queriesAndMutations" //using mutation to get create user account so u wont need to call it from the api
+import { useCreateUserAccount, useSignInAccount } from "@/lib/react-query/queriesAndMutations" //using mutation to get create user account so u wont need to call it from the api
 
 
 const SignupForm = () => {
   const { toast } = useToast()
 
-  const { mutateAsync:createUserAccount, isLoading:isCreatingUser } = useCreateUserAccount()
+  const { mutateAsync: createUserAccount, isLoading:isCreatingUser } = useCreateUserAccount();
+  const { mutateAsync: signInAccount, isLoading:isSigningIn } = useSignInAccount();
 
    // 1. Define your form.
    const form = useForm<z.infer<typeof SignupValidation>>({
@@ -39,7 +40,15 @@ const SignupForm = () => {
     if (!newUser) {
       return toast({ title: "Sign up failed, please try again." })
     }
-    //const session = await SignInAccount()
+    const session = await signInAccount({
+      email: values.email,
+      password: values.password
+    })
+
+    if(!session) {
+      return toast({title: "sign in failed, please try again."})
+    }
+    // now that we have a login session, we have to store this session in our react context at all times
   }
 
   return (
