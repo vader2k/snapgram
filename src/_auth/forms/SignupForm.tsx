@@ -10,15 +10,15 @@ import { SignupValidation } from "@/lib/validation" // signup validation functio
 import { z } from "zod"
 import Loader from "@/components/ui/shared/Loader" //loading svg component
 import { Link } from "react-router-dom" // react router dom link function
-import { createUserAccount } from "@/lib/appwrite/api" // function to create user account to save in auth and database
 
 import { useToast } from "@/components/ui/use-toast" // toast gotten from shadcn
+import { useCreateUserAccount } from "@/lib/react-query/queriesAndMutations" //using mutation to get create user account so u wont need to call it from the api
 
 
 const SignupForm = () => {
   const { toast } = useToast()
 
-  const isLoading = false;
+  const { mutateAsync:createUserAccount, isLoading:isCreatingUser } = useCreateUserAccount()
 
    // 1. Define your form.
    const form = useForm<z.infer<typeof SignupValidation>>({
@@ -110,7 +110,7 @@ const SignupForm = () => {
           />
           <Button type="submit" 
           className="shad-button_primary">
-            {isLoading ? <div className="flex-center gap-4"><Loader /> Loading...</div> : "sign up"}
+            {isCreatingUser ? <div className="flex-center gap-4"><Loader /> Loading...</div> : "sign up"}
           </Button>
 
           <p className="text-small-regular text-light-2 text-center mt-2">
