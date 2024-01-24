@@ -32,7 +32,11 @@ const SignupForm = () => {
   async function onSubmit(values: z.infer<typeof SignupValidation>) {
     // create user
     const newUser = await createUserAccount(values)
-    console.log(newUser)
+    // handle creation error
+    if (!newUser) {
+      return;
+    }
+    // add a toast to signify that the user has been created
   }
 
   return (
