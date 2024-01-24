@@ -31,8 +31,8 @@ const SignupForm = () => {
   // 2. Define a submit handler.
   async function onSubmit(values: z.infer<typeof SignupValidation>) {
     // create user
-    const newUSer = await createUserAccount(values)
-    console.log(newUSer)
+    const newUser = await createUserAccount(values)
+    console.log(newUser)
   }
 
   return (
