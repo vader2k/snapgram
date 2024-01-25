@@ -9,17 +9,20 @@ import { Input } from "@/components/ui/input" //input from shadcn
 import { SignupValidation } from "@/lib/validation" // signup validation function to set the form values
 import { z } from "zod"
 import Loader from "@/components/ui/shared/Loader" //loading svg component
-import { Link } from "react-router-dom" // react router dom link function
+import { Link, useNavigate } from "react-router-dom" // react router dom link function
 
 import { useToast } from "@/components/ui/use-toast" // toast gotten from shadcn
 import { useCreateUserAccount, useSignInAccount } from "@/lib/react-query/queriesAndMutations" //using mutation to get create user account so u wont need to call it from the api
+import { useUserContext } from "@/context/AuthContext"
 
 
 const SignupForm = () => {
   const { toast } = useToast()
+  const { checkAuthUser, isLoading: isUserLoading } = useUserContext()
+  const { mutateAsync: createUserAccount, isPending: isCreatingUser } = useCreateUserAccount();
+  const { mutateAsync: signInAccount, isPending: isSigningIn } = useSignInAccount();
+  const navigate = useNavigate()
 
-  const { mutateAsync: createUserAccount, isLoading:isCreatingUser } = useCreateUserAccount();
-  const { mutateAsync: signInAccount, isLoading:isSigningIn } = useSignInAccount();
 
    // 1. Define your form.
    const form = useForm<z.infer<typeof SignupValidation>>({
@@ -49,6 +52,14 @@ const SignupForm = () => {
       return toast({title: "sign in failed, please try again."})
     }
     // now that we have a login session, we have to store this session in our react context at all times
+    const isLoggedIn = await checkAuthUser();
+    if (isLoggedIn) {
+      form.reset()
+
+      navigate('/')
+    } else {
+      return toast({title: 'sign up failed'})
+    }
   }
 
   return (
